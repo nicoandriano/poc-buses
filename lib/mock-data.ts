@@ -999,112 +999,111 @@ export const services: Service[] = [
     comments: "",
     tags: ["nocturno", "cama"],
   },
-  // Más servicios para otras fechas
-  {
-    id: "srv-027",
-    marketId: "bue-mdp",
-    marketName: "Buenos Aires - Mar del Plata",
-    departureTime: "06:00",
-    arrivalTime: "11:30",
-    date: "2025-01-06",
-    daysUntilDeparture: 13,
-    ap: 10,
-    totalSeats: 52,
-    soldSeats: 38,
-    currentOccupancy: 73,
-    targetOccupancy: 52,
-    currentPrice: 27500,
-    basePrice: 25000,
-    recommendedPrice: 32000,
-    priceChange: 16.4,
-    status: "ahead-3",
-    gap: 21,
-    bookingVelocity: 4.8,
-    expectedVelocity: 3.0,
-    revenueTotal: 1045000,
-    revenueTotalUSD: 1045,
-    comments: "",
-    tags: ["temporada-alta"],
-  },
-  {
-    id: "srv-028",
-    marketId: "bue-cor",
-    marketName: "Buenos Aires - Córdoba",
-    departureTime: "20:00",
-    arrivalTime: "05:00",
-    date: "2025-01-06",
-    daysUntilDeparture: 13,
-    ap: 16,
-    totalSeats: 48,
-    soldSeats: 40,
-    currentOccupancy: 83,
-    targetOccupancy: 55,
-    currentPrice: 44000,
-    basePrice: 38000,
-    recommendedPrice: 52000,
-    priceChange: 18.2,
-    status: "ahead-3",
-    gap: 28,
-    bookingVelocity: 5.5,
-    expectedVelocity: 2.8,
-    revenueTotal: 1760000,
-    revenueTotalUSD: 1760,
-    comments: "",
-    tags: ["nocturno", "cama", "top-seller"],
-  },
-  {
-    id: "srv-029",
-    marketId: "bue-mza",
-    marketName: "Buenos Aires - Mendoza",
-    departureTime: "18:00",
-    arrivalTime: "07:00",
-    date: "2025-01-06",
-    daysUntilDeparture: 13,
-    ap: 14,
-    totalSeats: 45,
-    soldSeats: 32,
-    currentOccupancy: 71,
-    targetOccupancy: 58,
-    currentPrice: 54000,
-    basePrice: 52000,
-    recommendedPrice: 58000,
-    priceChange: 7.4,
-    status: "ahead-2",
-    gap: 13,
-    bookingVelocity: 4.2,
-    expectedVelocity: 2.8,
-    revenueTotal: 1728000,
-    revenueTotalUSD: 1728,
-    comments: "",
-    tags: ["nocturno", "cama"],
-  },
-  {
-    id: "srv-030",
-    marketId: "bue-brc",
-    marketName: "Buenos Aires - Bariloche",
-    departureTime: "10:00",
-    arrivalTime: "06:00",
-    date: "2025-01-06",
-    daysUntilDeparture: 13,
-    ap: 22,
-    totalSeats: 42,
-    soldSeats: 38,
-    currentOccupancy: 90,
-    targetOccupancy: 62,
-    currentPrice: 84000,
-    basePrice: 75000,
-    recommendedPrice: 95000,
-    priceChange: 13.1,
-    status: "ahead-3",
-    gap: 28,
-    bookingVelocity: 5.8,
-    expectedVelocity: 2.5,
-    revenueTotal: 3192000,
-    revenueTotalUSD: 3192,
-    comments: "Muy demandado",
-    tags: ["cama", "suite", "premium", "top-seller"],
-  },
 ]
+
+// Generate services for every day in January 2025
+const marketTemplates = [
+  { marketId: "bue-mdp", marketName: "Buenos Aires - Mar del Plata", times: ["06:00","08:00","10:30","14:00","18:00","22:00"], seats: 52, basePrice: 25000, targetOcc: 55 },
+  { marketId: "bue-cor", marketName: "Buenos Aires - Córdoba", times: ["07:00","12:00","20:00","23:30"], seats: 48, basePrice: 38000, targetOcc: 58 },
+  { marketId: "bue-ros", marketName: "Buenos Aires - Rosario", times: ["06:30","09:00","14:00","18:30"], seats: 52, basePrice: 16000, targetOcc: 60 },
+  { marketId: "bue-mza", marketName: "Buenos Aires - Mendoza", times: ["08:00","18:00","22:00"], seats: 45, basePrice: 52000, targetOcc: 62 },
+  { marketId: "bue-brc", marketName: "Buenos Aires - Bariloche", times: ["10:00","18:00"], seats: 42, basePrice: 75000, targetOcc: 65 },
+  { marketId: "bue-neu", marketName: "Buenos Aires - Neuquén", times: ["09:00","20:00"], seats: 48, basePrice: 45000, targetOcc: 60 },
+  { marketId: "bue-sfe", marketName: "Buenos Aires - Santa Fe", times: ["07:00","12:00","17:00"], seats: 52, basePrice: 20000, targetOcc: 58 },
+  { marketId: "cor-mza", marketName: "Córdoba - Mendoza", times: ["08:00","22:00"], seats: 45, basePrice: 35000, targetOcc: 60 },
+]
+
+// Seed-based pseudo random for consistent data
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
+
+const tagOptions = ["temporada-alta","nocturno","cama","premium","ejecutivo","revisar","promocionar","semi-cama","top-seller",""]
+const commentOptions = ["","","","Alta demanda","Baja demanda","Competencia aerea","Sigue curva","Revisar pricing","Promocion activa",""]
+
+function generateMonthServices(): Service[] {
+  const generated: Service[] = []
+  let idCounter = 100
+
+  for (let day = 6; day <= 31; day++) {
+    const dateStr = `2025-01-${String(day).padStart(2,"0")}`
+    const daysUntil = day + 5 // mock AP offset
+    const dayOfWeek = new Date(2025, 0, day).getDay() // 0=Sun
+
+    for (const tmpl of marketTemplates) {
+      for (let ti = 0; ti < tmpl.times.length; ti++) {
+        const time = tmpl.times[ti]
+        const seed = day * 1000 + idCounter + ti
+        const r = seededRandom(seed)
+
+        // Weekend/Friday boost
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+        const isFriday = dayOfWeek === 5
+        const boost = isWeekend ? 12 : isFriday ? 8 : 0
+
+        // Time-of-day effect: morning & evening more popular
+        const hour = parseInt(time.split(":")[0])
+        const timeBoost = (hour <= 8 || hour >= 18) ? 6 : -3
+
+        // Random variation
+        const variation = Math.round((r - 0.45) * 40) // -18 to +22
+
+        const gap = Math.round(variation + boost + timeBoost)
+        const status = getStatus(gap)
+        const occ = Math.max(15, Math.min(98, tmpl.targetOcc + gap))
+        const sold = Math.round((occ / 100) * tmpl.seats)
+        const ap = Math.max(1, Math.round(seededRandom(seed + 7) * 20))
+
+        const priceMultiplier = gap > 10 ? 1.15 : gap > 5 ? 1.05 : gap > -5 ? 1.0 : gap > -10 ? 0.92 : 0.82
+        const currentPrice = Math.round(tmpl.basePrice * priceMultiplier / 500) * 500
+        const recMultiplier = gap > 15 ? 1.25 : gap > 10 ? 1.15 : gap > 5 ? 1.08 : gap > -5 ? 1.0 : gap > -10 ? 0.9 : gap > -15 ? 0.82 : 0.72
+        const recommendedPrice = Math.round(tmpl.basePrice * recMultiplier / 500) * 500
+        const priceChange = Math.round(((recommendedPrice - currentPrice) / currentPrice) * 1000) / 10
+
+        const tagSeed = Math.floor(seededRandom(seed + 3) * tagOptions.length)
+        const tags: string[] = []
+        if (tagOptions[tagSeed]) tags.push(tagOptions[tagSeed])
+        if (isWeekend || isFriday) tags.push("fin-de-semana")
+        if (hour >= 18) tags.push("nocturno")
+
+        const commentSeed = Math.floor(seededRandom(seed + 5) * commentOptions.length)
+
+        generated.push({
+          id: `srv-${String(idCounter++).padStart(3,"0")}`,
+          marketId: tmpl.marketId,
+          marketName: tmpl.marketName,
+          departureTime: time,
+          arrivalTime: time, // simplified
+          date: dateStr,
+          daysUntilDeparture: daysUntil,
+          ap,
+          totalSeats: tmpl.seats,
+          soldSeats: sold,
+          currentOccupancy: occ,
+          targetOccupancy: tmpl.targetOcc,
+          currentPrice,
+          basePrice: tmpl.basePrice,
+          recommendedPrice,
+          priceChange,
+          status,
+          gap,
+          bookingVelocity: Math.round((2 + seededRandom(seed + 2) * 4) * 10) / 10,
+          expectedVelocity: 3.0,
+          revenueTotal: sold * currentPrice,
+          revenueTotalUSD: Math.round((sold * currentPrice) / 1000),
+          comments: commentOptions[commentSeed],
+          tags,
+        })
+      }
+    }
+  }
+  return generated
+}
+
+// Merge hand-crafted Jan 5 services with generated Jan 6-31
+const generatedServices = generateMonthServices()
+services.push(...generatedServices)
 
 function generateCurvePoints(
   baseOccupancy: number,
@@ -1374,15 +1373,15 @@ export const dashboardKPIs: DashboardKPIs = {
   revenueGrowth: 12.5,
   avgOccupancy: 72,
   occupancyTarget: 73,
-  totalServices: 30,
-  servicesOnTarget: 8,
-  servicesBehind: 7,
-  servicesAhead: 15,
+  totalServices: services.length,
+  servicesOnTarget: services.filter(s => s.status === "on-curve").length,
+  servicesBehind: services.filter(s => s.status.startsWith("behind")).length,
+  servicesAhead: services.filter(s => s.status.startsWith("ahead")).length,
   activeAlerts: 5,
   criticalAlerts: 2,
-  totalPax: 945,
-  totalSeats: 1432,
-  totalFrequencies: 30,
+  totalPax: services.reduce((acc, s) => acc + s.soldSeats, 0),
+  totalSeats: services.reduce((acc, s) => acc + s.totalSeats, 0),
+  totalFrequencies: services.length,
 }
 
 export const revenueHistory: RevenueDataPoint[] = [
