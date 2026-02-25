@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { LayoutDashboard, TrendingUp, LineChart, Bell, Settings } from "lucide-react"
+import { LayoutDashboard, TrendingUp, LineChart, Bell, Settings, ChevronDown } from "lucide-react"
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -20,13 +21,20 @@ export function Navigation() {
     <header className="border-b border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="text-sm font-bold text-primary-foreground">BR</span>
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                  <span className="text-xs font-bold text-primary-foreground">MGO</span>
+                </div>
+                <div className="hidden sm:flex flex-col leading-none">
+                  <span className="text-sm font-bold text-foreground">MGO Revenue</span>
+                  <span className="text-[10px] text-muted-foreground tracking-wide">by Catalyst RM</span>
+                </div>
               </div>
-              <span className="text-lg font-semibold text-foreground">BusRevenue</span>
             </Link>
+
+            <div className="hidden lg:block h-8 w-px bg-border" />
 
             <nav className="hidden md:flex items-center gap-1">
               {navItems.map((item) => {
@@ -53,12 +61,28 @@ export function Navigation() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-foreground">Pullman Bus</p>
-              <p className="text-xs text-muted-foreground">Revenue Manager</p>
+            <div className="hidden sm:flex items-center gap-3 rounded-lg border border-border px-3 py-1.5">
+              <Image
+                src="/images/via-bariloche-logo.png"
+                alt="Via Bariloche"
+                width={28}
+                height={28}
+                className="rounded"
+              />
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground leading-tight">Via Bariloche</p>
+                <p className="text-[11px] text-muted-foreground">Gerente de Estrategia de Red</p>
+              </div>
+              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </div>
-            <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center">
-              <span className="text-sm font-medium text-muted-foreground">PB</span>
+            <div className="sm:hidden h-9 w-9 rounded-full overflow-hidden border border-border">
+              <Image
+                src="/images/via-bariloche-logo.png"
+                alt="Via Bariloche"
+                width={36}
+                height={36}
+                className="object-cover"
+              />
             </div>
           </div>
         </div>

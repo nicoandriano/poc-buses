@@ -27,7 +27,7 @@ export default function DashboardPage() {
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Vista general del revenue management</p>
+            <p className="text-sm text-muted-foreground">Via Bariloche &middot; Vista general del revenue management</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Moneda:</span>
