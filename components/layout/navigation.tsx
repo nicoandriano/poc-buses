@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
+/* eslint-disable @next/next/no-img-element */
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { LayoutDashboard, TrendingUp, LineChart, Bell, Settings, ChevronDown } from "lucide-react"
@@ -62,8 +62,8 @@ export function Navigation() {
 
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-3 rounded-lg border border-border px-3 py-1.5">
-              <Image
-                src="/images/via-bariloche-logo.png"
+              <img
+                src="https://www.consultoralichtenberg.com/images/clients/client%20(6).svg"
                 alt="Via Bariloche"
                 width={28}
                 height={28}
@@ -76,8 +76,8 @@ export function Navigation() {
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             </div>
             <div className="sm:hidden h-9 w-9 rounded-full overflow-hidden border border-border">
-              <Image
-                src="/images/via-bariloche-logo.png"
+              <img
+                src="https://www.consultoralichtenberg.com/images/clients/client%20(6).svg"
                 alt="Via Bariloche"
                 width={36}
                 height={36}
