@@ -78,6 +78,23 @@ export interface Alert {
   actionTaken?: string
 }
 
+export type NotificationChannel = "platform" | "email" | "slack" | "whatsapp" | "sms" | "webhook"
+
+export interface NotificationChannelConfig {
+  id: string
+  type: NotificationChannel
+  name: string
+  enabled: boolean
+  config: {
+    email?: string
+    webhookUrl?: string
+    slackChannel?: string
+    phoneNumber?: string
+  }
+  lastSent?: string
+  sentCount: number
+}
+
 export interface AlertRule {
   id: string
   name: string
@@ -86,6 +103,7 @@ export interface AlertRule {
   threshold: number
   severity: AlertSeverity
   enabled: boolean
+  channels: NotificationChannel[] // canales donde se envía esta alerta
 }
 
 export interface AggressivenessConfig {

@@ -3,11 +3,12 @@
 import type React from "react"
 
 import { useState } from "react"
-import type { AlertRule, AlertType, AlertSeverity } from "@/types"
+import type { AlertRule, AlertType, AlertSeverity, NotificationChannel } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { X } from "lucide-react"
+import { X, Mail, MessageSquare, MessageCircle, Phone, Webhook, Bell, Check } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface RuleFormProps {
   rule?: AlertRule
@@ -15,12 +16,28 @@ interface RuleFormProps {
   onCancel: () => void
 }
 
+const channelOptions: { id: NotificationChannel; label: string; icon: typeof Mail }[] = [
+  { id: "platform", label: "Plataforma", icon: Bell },
+  { id: "email", label: "Email", icon: Mail },
+  { id: "slack", label: "Slack", icon: MessageSquare },
+  { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { id: "sms", label: "SMS", icon: Phone },
+  { id: "webhook", label: "Webhook", icon: Webhook },
+]
+
 export function RuleForm({ rule, onSave, onCancel }: RuleFormProps) {
   const [name, setName] = useState(rule?.name || "")
   const [type, setType] = useState<AlertType>(rule?.type || "occupation")
   const [condition, setCondition] = useState(rule?.condition || "below_target")
   const [threshold, setThreshold] = useState(rule?.threshold || 10)
   const [severity, setSeverity] = useState<AlertSeverity>(rule?.severity || "warning")
+  const [channels, setChannels] = useState<NotificationChannel[]>(rule?.channels || ["platform"])
+
+  const toggleChannel = (channel: NotificationChannel) => {
+    setChannels((prev) =>
+      prev.includes(channel) ? prev.filter((c) => c !== channel) : [...prev, channel]
+    )
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,6 +48,7 @@ export function RuleForm({ rule, onSave, onCancel }: RuleFormProps) {
       threshold,
       severity,
       enabled: true,
+      channels,
     })
   }
 
@@ -110,6 +128,33 @@ export function RuleForm({ rule, onSave, onCancel }: RuleFormProps) {
               <option value="warning">Advertencia</option>
               <option value="info">Informativa</option>
             </select>
+          </div>
+
+          <div>
+            <Label>Canales de notificación</Label>
+            <p className="text-xs text-muted-foreground mb-2">Selecciona dónde enviar esta alerta</p>
+            <div className="flex flex-wrap gap-2">
+              {channelOptions.map(({ id, label, icon: Icon }) => {
+                const isSelected = channels.includes(id)
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => toggleChannel(id)}
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-medium transition-colors",
+                      isSelected
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:border-primary/50"
+                    )}
+                  >
+                    {isSelected && <Check className="h-3 w-3" />}
+                    <Icon className="h-3.5 w-3.5" />
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           <div className="flex items-center gap-3 pt-2">

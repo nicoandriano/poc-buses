@@ -8,8 +8,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "BusRevenue - Revenue Management",
-  description: "Plataforma de Revenue Management para empresas de buses",
+  title: "MGO Revenue by Catalyst RM",
+  description: "Plataforma de Revenue Management - Via Bariloche",
   generator: "v0.app",
   icons: {
     icon: [
