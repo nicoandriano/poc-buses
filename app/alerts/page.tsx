@@ -5,19 +5,21 @@ import { Navigation } from "@/components/layout/navigation"
 import { AlertsList } from "@/components/alerts/alerts-list"
 import { RuleCard } from "@/components/alerts/rule-card"
 import { RuleForm } from "@/components/alerts/rule-form"
-import { alerts as initialAlerts, alertRules as initialRules } from "@/lib/mock-data"
-import type { Alert, AlertRule } from "@/types"
+import { ChannelsManager } from "@/components/alerts/channels-manager"
+import { alerts as initialAlerts, alertRules as initialRules, notificationChannels as initialChannels } from "@/lib/mock-data"
+import type { Alert, AlertRule, NotificationChannelConfig } from "@/types"
 import { Button } from "@/components/ui/button"
-import { Plus, Bell, Settings, Filter } from "lucide-react"
+import { Plus, Bell, Settings, Filter, Send } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-type Tab = "alerts" | "rules"
+type Tab = "alerts" | "rules" | "channels"
 type FilterSeverity = "all" | "critical" | "warning" | "info"
 
 export default function AlertsPage() {
   const [activeTab, setActiveTab] = useState<Tab>("alerts")
   const [alerts, setAlerts] = useState<Alert[]>(initialAlerts)
   const [rules, setRules] = useState<AlertRule[]>(initialRules)
+  const [channels, setChannels] = useState<NotificationChannelConfig[]>(initialChannels)
   const [showRuleForm, setShowRuleForm] = useState(false)
   const [editingRule, setEditingRule] = useState<AlertRule | undefined>()
   const [filterSeverity, setFilterSeverity] = useState<FilterSeverity>("all")
@@ -107,6 +109,21 @@ export default function AlertsPage() {
             <Settings className="h-4 w-4" />
             Reglas
           </button>
+          <button
+            onClick={() => setActiveTab("channels")}
+            className={cn(
+              "flex items-center gap-2 px-1 pb-3 text-sm font-medium border-b-2 transition-colors",
+              activeTab === "channels"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Send className="h-4 w-4" />
+            Canales
+            <span className="px-1.5 py-0.5 rounded-full text-xs bg-muted text-muted-foreground">
+              {channels.filter((c) => c.enabled).length}
+            </span>
+          </button>
         </div>
 
         {activeTab === "alerts" && (
@@ -183,6 +200,51 @@ export default function AlertsPage() {
               ))}
             </div>
           </>
+        )}
+
+        {activeTab === "channels" && (
+          <div className="space-y-6">
+            {/* Info banner */}
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <div className="flex gap-3">
+                <Send className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-blue-800">Notificaciones automáticas</p>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Las alertas se envían automáticamente a los canales configurados según las reglas activas.
+                    Puedes agregar múltiples destinatarios por canal (ej: varios emails) y elegir qué canales
+                    reciben cada tipo de alerta en la configuración de reglas.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <ChannelsManager channels={channels} onChange={setChannels} />
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-foreground">{channels.length}</p>
+                <p className="text-xs text-muted-foreground">Canales totales</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-green-600">{channels.filter((c) => c.enabled).length}</p>
+                <p className="text-xs text-muted-foreground">Canales activos</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-foreground">
+                  {channels.reduce((acc, c) => acc + c.sentCount, 0)}
+                </p>
+                <p className="text-xs text-muted-foreground">Alertas enviadas</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-4">
+                <p className="text-2xl font-bold text-foreground">
+                  {rules.filter((r) => r.enabled && r.channels?.some((ch) => ch !== "platform")).length}
+                </p>
+                <p className="text-xs text-muted-foreground">Reglas con envío externo</p>
+              </div>
+            </div>
+          </div>
         )}
 
         {showRuleForm && (

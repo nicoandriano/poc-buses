@@ -10,6 +10,7 @@ import type {
   ServiceStatus,
   Cluster,
   CurveZoneConfig,
+  NotificationChannelConfig,
 } from "@/types"
 
 export const markets: Market[] = [
@@ -1329,6 +1330,7 @@ export const alertRules: AlertRule[] = [
     threshold: 15,
     severity: "critical",
     enabled: true,
+    channels: ["platform", "email", "whatsapp"],
   },
   {
     id: "rule-002",
@@ -1338,6 +1340,7 @@ export const alertRules: AlertRule[] = [
     threshold: 10,
     severity: "warning",
     enabled: true,
+    channels: ["platform", "email"],
   },
   {
     id: "rule-003",
@@ -1347,6 +1350,74 @@ export const alertRules: AlertRule[] = [
     threshold: 150,
     severity: "warning",
     enabled: true,
+    channels: ["platform", "slack"],
+  },
+  {
+    id: "rule-004",
+    name: "Competencia detectada",
+    type: "competition",
+    condition: "below_target",
+    threshold: 20,
+    severity: "info",
+    enabled: true,
+    channels: ["platform"],
+  },
+]
+
+export const notificationChannels: NotificationChannelConfig[] = [
+  {
+    id: "ch-001",
+    type: "email",
+    name: "Equipo Revenue",
+    enabled: true,
+    config: {
+      email: "revenue@viabariloche.com.ar",
+    },
+    lastSent: "Hace 2 horas",
+    sentCount: 145,
+  },
+  {
+    id: "ch-002",
+    type: "email",
+    name: "Gerencia Comercial",
+    enabled: true,
+    config: {
+      email: "gerencia.comercial@viabariloche.com.ar",
+    },
+    lastSent: "Ayer",
+    sentCount: 52,
+  },
+  {
+    id: "ch-003",
+    type: "slack",
+    name: "Canal Revenue",
+    enabled: true,
+    config: {
+      slackChannel: "#revenue-alerts",
+    },
+    lastSent: "Hace 1 hora",
+    sentCount: 234,
+  },
+  {
+    id: "ch-004",
+    type: "whatsapp",
+    name: "Alertas Urgentes",
+    enabled: true,
+    config: {
+      phoneNumber: "+54 11 5555 1234",
+    },
+    lastSent: "Hace 4 horas",
+    sentCount: 28,
+  },
+  {
+    id: "ch-005",
+    type: "webhook",
+    name: "Sistema ERP",
+    enabled: false,
+    config: {
+      webhookUrl: "https://erp.viabariloche.com.ar/api/webhooks/revenue",
+    },
+    sentCount: 0,
   },
 ]
 

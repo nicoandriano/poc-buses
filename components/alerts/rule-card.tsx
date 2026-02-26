@@ -1,10 +1,19 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import type { AlertRule } from "@/types"
+import type { AlertRule, NotificationChannel } from "@/types"
 import { Switch } from "@/components/ui/switch"
-import { Pencil, Trash2 } from "lucide-react"
+import { Pencil, Trash2, Mail, MessageSquare, MessageCircle, Phone, Webhook, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
+
+const channelIcons: Record<NotificationChannel, typeof Mail> = {
+  platform: Bell,
+  email: Mail,
+  slack: MessageSquare,
+  whatsapp: MessageCircle,
+  sms: Phone,
+  webhook: Webhook,
+}
 
 interface RuleCardProps {
   rule: AlertRule
@@ -48,6 +57,25 @@ export function RuleCard({ rule, onToggle, onEdit, onDelete }: RuleCardProps) {
             {typeLabels[rule.type]}: {conditionLabels[rule.condition] || rule.condition}{" "}
             <span className="font-medium text-foreground">{rule.threshold}%</span>
           </p>
+          {rule.channels && rule.channels.length > 0 && (
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className="text-xs text-muted-foreground">Enviar a:</span>
+              <div className="flex items-center gap-1">
+                {rule.channels.map((ch) => {
+                  const Icon = channelIcons[ch]
+                  return (
+                    <div
+                      key={ch}
+                      className="flex items-center justify-center h-5 w-5 rounded bg-muted"
+                      title={ch}
+                    >
+                      <Icon className="h-3 w-3 text-muted-foreground" />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
